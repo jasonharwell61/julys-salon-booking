@@ -9,7 +9,8 @@
     "start": "node src/server.js",
     "db:test": "node scripts/testConnection.js",
     "test:user-model": "node scripts/testUserModel.js",
-    "test:service-model": "node scripts/testServiceModel.js"
+    "test:service-model": "node scripts/testServiceModel.js",
+    "test:booking-model": "node scripts/testBookingModel.js"
   },
   "keywords": [],
   "author": "",
