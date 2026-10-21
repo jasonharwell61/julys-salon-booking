@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
+import { env } from './config/env.js'
 import healthRoutes from './routes/healthRoutes.js'
 import notFound from './middleware/notFound.js'
 import errorHandler from './middleware/errorHandler.js'
@@ -11,11 +12,7 @@ const app = express()
 app.use(helmet())
 
 // Only allow requests from our React app's address
-app.use(
-  cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
-  })
-)
+app.use(cors({ origin: env.clientOrigin }))
 
 // Reads JSON request bodies, and refuses anything bigger than 10 KB
 app.use(express.json({ limit: '10kb' }))
