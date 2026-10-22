@@ -13,7 +13,8 @@
     "test:booking-model": "node scripts/testBookingModel.js",
     "seed": "node scripts/seedServices.js",
     "test:ownership": "node scripts/testOwnership.js",
-    "test:booking-rules": "node scripts/testBookingRules.js"
+    "test:booking-rules": "node scripts/testBookingRules.js",
+    "cleanup:test-data": "node scripts/cleanupTestData.js"
   },
   "keywords": [],
   "author": "",
