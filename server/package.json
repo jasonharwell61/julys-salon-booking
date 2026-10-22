@@ -10,7 +10,8 @@
     "db:test": "node scripts/testConnection.js",
     "test:user-model": "node scripts/testUserModel.js",
     "test:service-model": "node scripts/testServiceModel.js",
-    "test:booking-model": "node scripts/testBookingModel.js"
+    "test:booking-model": "node scripts/testBookingModel.js",
+    "seed": "node scripts/seedServices.js"
   },
   "keywords": [],
   "author": "",
