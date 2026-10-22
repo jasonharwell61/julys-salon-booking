@@ -1,6 +1,7 @@
 import Booking from '../models/Booking.js'
 import Service from '../models/Service.js'
 import ApiError from '../utils/ApiError.js'
+import { assertCanAccessBooking } from '../utils/ownership.js'
 import { BOOKING_RULES } from '../config/bookingRules.js'
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -124,4 +125,108 @@ export async function createBooking({ userId, serviceId, startTime, customerNote
     endTime,
     customerNote,
   })
+}
+
+// ---------- Reading, updating and cancelling ----------
+
+// Loads a booking and makes sure this user is allowed to see it
+async function findBookingFor(user, bookingId) {
+  const booking = await Booking.findById(bookingId)
+  if (!booking) {
+    throw new ApiError(404, 'Booking not found')
+  }
+  assertCanAccessBooking(user, booking)
+  return booking
+}
+
+// The logged-in user's own bookings, soonest first
+export function listMyBookings(userId) {
+  return Booking.find({ user: userId }).sort({ startTime: 1 })
+}
+
+// Every booking, soonest first. Population adds the customer's name and email.
+export function listAllBookings() {
+  return Booking.find().sort({ startTime: 1 }).populate('user', 'name email')
+}
+
+export function getBooking(user, bookingId) {
+  return findBookingFor(user, bookingId)
+}
+
+// Customers may change startTime and customerNote. Admins may only mark a booking completed.
+export async function updateBooking(user, bookingId, changes) {
+  const booking = await findBookingFor(user, bookingId)
+
+  // ----- Admin: status can only move from confirmed to completed -----
+  if (user.role === 'admin') {
+    if (changes.status === undefined) {
+      throw new ApiError(400, 'Validation failed', [
+        { field: 'body', message: 'Provide a status to update' },
+      ])
+    }
+    if (changes.status !== 'completed') {
+      throw new ApiError(400, 'Validation failed', [
+        { field: 'status', message: 'Status can only be changed to completed' },
+      ])
+    }
+    if (booking.status !== 'confirmed') {
+      throw new ApiError(409, 'Only confirmed bookings can be marked completed')
+    }
+
+    booking.status = 'completed'
+    await booking.save()
+    return booking
+  }
+
+  // ----- Customer: reschedule and/or edit the note -----
+  // Any other field in the request (like status) was never passed to us
+  if (changes.startTime === undefined && changes.customerNote === undefined) {
+    throw new ApiError(400, 'Validation failed', [
+      { field: 'body', message: 'Provide startTime or customerNote to update' },
+    ])
+  }
+  if (booking.status !== 'confirmed') {
+    throw new ApiError(409, 'Only confirmed bookings can be changed')
+  }
+  if (booking.startTime <= new Date()) {
+    throw new ApiError(409, 'Past appointments cannot be changed')
+  }
+
+  if (changes.startTime !== undefined) {
+    // Duration comes from the saved snapshot, not from the request
+    const endTime = new Date(
+      changes.startTime.getTime() + booking.serviceSnapshot.durationMinutes * MINUTE_MS
+    )
+    validateAppointmentTime(changes.startTime, endTime)
+    await assertSlotIsFree(changes.startTime, endTime, booking._id) // ignore itself
+
+    booking.startTime = changes.startTime
+    booking.endTime = endTime
+  }
+
+  if (changes.customerNote !== undefined) {
+    // An empty note clears it
+    booking.customerNote = changes.customerNote || undefined
+  }
+
+  await booking.save()
+  return booking
+}
+
+// Cancels a booking (the record is kept, with status "cancelled")
+export async function cancelBooking(user, bookingId) {
+  const booking = await findBookingFor(user, bookingId)
+
+  if (booking.status !== 'confirmed') {
+    throw new ApiError(409, `Only confirmed bookings can be cancelled (this one is ${booking.status})`)
+  }
+  // Customers can cancel until the appointment starts
+  if (user.role !== 'admin' && booking.startTime <= new Date()) {
+    throw new ApiError(409, 'Past appointments cannot be cancelled')
+  }
+
+  booking.status = 'cancelled'
+  booking.cancelledAt = new Date()
+  await booking.save()
+  return booking
 }

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { listAllServices } from '../controllers/serviceController.js'
+import { listAllBookings } from '../controllers/bookingController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { requireRole } from '../middleware/requireRole.js'
 
@@ -9,5 +10,6 @@ const router = Router()
 router.use(requireAuth, requireRole('admin'))
 
 router.get('/services', listAllServices)
+router.get('/bookings', listAllBookings)
 
 export default router
