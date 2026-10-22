@@ -11,7 +11,8 @@
     "test:user-model": "node scripts/testUserModel.js",
     "test:service-model": "node scripts/testServiceModel.js",
     "test:booking-model": "node scripts/testBookingModel.js",
-    "seed": "node scripts/seedServices.js"
+    "seed": "node scripts/seedServices.js",
+    "test:ownership": "node scripts/testOwnership.js"
   },
   "keywords": [],
   "author": "",
