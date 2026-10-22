@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { env } from './config/env.js'
 import healthRoutes from './routes/healthRoutes.js'
+import devRoutes from './routes/devRoutes.js'
 import notFound from './middleware/notFound.js'
 import errorHandler from './middleware/errorHandler.js'
 
@@ -19,6 +20,12 @@ app.use(express.json({ limit: '10kb' }))
 
 // Routes
 app.use('/api/health', healthRoutes)
+
+// TEMPORARY test routes. Not available in production.
+// DELETE this block and routes/devRoutes.js in Step 16.
+if (env.nodeEnv !== 'production') {
+  app.use('/api/dev', devRoutes)
+}
 
 // These two MUST stay last: unknown routes first, then errors
 app.use(notFound)
