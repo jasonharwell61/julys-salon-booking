@@ -1,9 +1,20 @@
-import { env } from './config/env.js'
+import { env, requireEnv } from './config/env.js'
 import app from './app.js'
 import { connectDB, disconnectDB, getSafeErrorMessage } from './config/db.js'
 
 async function startServer() {
-  // 1. Connect to the database FIRST
+  // 1. Check required secrets BEFORE doing anything else
+  try {
+    const jwtSecret = requireEnv('JWT_SECRET')
+    if (jwtSecret.length < 32) {
+      throw new Error('JWT_SECRET must be at least 32 characters long')
+    }
+  } catch (err) {
+    console.error('Configuration error:', err.message)
+    process.exit(1)
+  }
+
+  // 2. Connect to the database
   try {
     await connectDB()
   } catch (err) {
@@ -11,12 +22,12 @@ async function startServer() {
     process.exit(1) // stop startup, nothing is listening
   }
 
-  // 2. Only now start accepting requests
+  // 3. Only now start accepting requests
   const server = app.listen(env.port, () => {
     console.log(`July's Salon API listening on port ${env.port}`)
   })
 
-  // 3. Shut down cleanly when told to stop
+  // 4. Shut down cleanly when told to stop
   async function shutdown(signal) {
     console.log(`${signal} received, shutting down...`)
 

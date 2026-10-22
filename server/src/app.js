@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { env } from './config/env.js'
 import healthRoutes from './routes/healthRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 import serviceRoutes from './routes/serviceRoutes.js'
 import notFound from './middleware/notFound.js'
 import errorHandler from './middleware/errorHandler.js'
@@ -20,6 +21,7 @@ app.use(express.json({ limit: '10kb' }))
 
 // Routes
 app.use('/api/health', healthRoutes)
+app.use('/api/auth', authRoutes)
 app.use('/api/services', serviceRoutes)
 
 // These two MUST stay last: unknown routes first, then errors
