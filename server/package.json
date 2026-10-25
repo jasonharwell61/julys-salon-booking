@@ -15,7 +15,8 @@
     "test:ownership": "node scripts/testOwnership.js",
     "test:booking-rules": "node scripts/testBookingRules.js",
     "cleanup:test-data": "node scripts/cleanupTestData.js",
-    "ai:check": "node scripts/checkAiConfig.js"
+    "ai:check": "node scripts/checkAiConfig.js",
+    "test:ai-service": "node scripts/testAiService.js"
   },
   "keywords": [],
   "author": "",
