@@ -231,3 +231,33 @@ a:hover { color: var(--gold); }
 .account-details dt { color: var(--muted); font-size: 0.72rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; }
 .account-details dd { margin: 0.15rem 0 0; font-size: 1.1rem; word-break: break-word; }
 .account-role { text-transform: capitalize; color: var(--gold-light); }
+
+/* ---------- Booking ---------- */
+.field-input { color-scheme: dark; }
+.field-input option { background: var(--surface); color: var(--text); }
+.field-textarea { resize: vertical; min-height: 5rem; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 0.75rem; }
+.booking-panel { margin-top: 2.5rem; padding: 1.75rem; max-width: 30rem; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+.booking-panel h2 { font-size: 1.9rem; }
+.muted { color: var(--muted); }
+.list-heading { margin: 2rem 0 1rem; font-size: 1.8rem; }
+.booking-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; align-items: start; }
+.booking-card { padding: 1.4rem; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+.booking-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+.booking-name { margin: 0; font-size: 1.5rem; }
+.booking-time { margin: 0.6rem 0 0.1rem; color: var(--gold-light); font-weight: 500; }
+.booking-meta { margin: 0 0 0.25rem; color: var(--muted); font-size: 0.88rem; }
+.booking-note { margin: 0.6rem 0 0; color: var(--text); font-style: italic; font-size: 0.92rem; }
+.status-badge { flex-shrink: 0; padding: 0.15rem 0.7rem; border-radius: 999px; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--border); }
+.status-confirmed { color: var(--gold-light); border-color: var(--gold); }
+.status-completed { color: #8fd19e; border-color: #3d6b49; }
+.status-cancelled { color: var(--danger); border-color: #6b3d39; }
+.notice-banner { margin-bottom: 1.75rem; padding: 0.9rem 1.1rem; border-radius: 10px; border: 1px solid var(--gold); background: rgba(201, 162, 75, 0.1); color: var(--gold-light); }
+.btn-link-danger { background: none; border: 0; padding: 0.5rem 0.25rem; min-height: 44px; cursor: pointer; color: var(--danger); font-size: 0.82rem; letter-spacing: 0.08em; text-decoration: underline; }
+.btn-danger { min-height: 44px; padding: 0.55rem 1.3rem; border-radius: 999px; cursor: pointer; border: 1px solid var(--danger); background: transparent; color: var(--danger); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.btn-danger:hover { background: var(--danger); color: #111; }
+.btn-danger:disabled, .btn-gold:disabled, .btn-outline-gold:disabled { opacity: 0.6; cursor: not-allowed; }
+.confirm-box { margin-top: 1rem; padding: 1rem; border: 1px solid #6b3d39; border-radius: 10px; background: rgba(255, 138, 128, 0.06); }
+.confirm-box p { margin: 0 0 0.25rem; }
+.booking-form { margin-top: 1rem; }
+.admin-filters { margin-bottom: 2rem; }

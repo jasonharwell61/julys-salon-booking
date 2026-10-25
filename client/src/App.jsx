@@ -3,8 +3,10 @@ import Footer from './components/Footer.jsx'
 import Navigation from './components/Navigation.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import AccountPage from './pages/AccountPage.jsx'
+import AdminBookingsPage from './pages/AdminBookingsPage.jsx'
 import Home from './pages/Home.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import MyBookingsPage from './pages/MyBookingsPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import ServiceDetailPage from './pages/ServiceDetailPage.jsx'
@@ -27,6 +29,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <AccountPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute>
+                <MyBookingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminBookingsPage />
               </ProtectedRoute>
             }
           />

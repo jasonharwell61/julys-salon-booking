@@ -45,6 +45,14 @@ function Navigation() {
           {!restoring && user && (
             <>
               <li>
+                <NavLink to="/bookings" onClick={close}>My bookings</NavLink>
+              </li>
+              {user.role === 'admin' && (
+                <li>
+                  <NavLink to="/admin" onClick={close}>Admin</NavLink>
+                </li>
+              )}
+              <li>
                 <NavLink to="/account" onClick={close}>Account</NavLink>
               </li>
               <li>

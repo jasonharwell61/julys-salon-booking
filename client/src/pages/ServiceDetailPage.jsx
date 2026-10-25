@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getService } from '../api/servicesApi.js'
+import BookingPanel from '../components/BookingPanel.jsx'
 import StatusMessage from '../components/StatusMessage.jsx'
 import { useAsyncData } from '../hooks/useAsyncData.js'
 import { CATEGORY_LABELS, formatDuration, formatPrice } from '../utils/format.js'
@@ -54,6 +55,8 @@ function ServiceDetailPage() {
             ))}
           </ul>
         )}
+
+        <BookingPanel service={service} />
       </article>
     )
   }
