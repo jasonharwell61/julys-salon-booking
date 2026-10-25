@@ -14,13 +14,15 @@
     "seed": "node scripts/seedServices.js",
     "test:ownership": "node scripts/testOwnership.js",
     "test:booking-rules": "node scripts/testBookingRules.js",
-    "cleanup:test-data": "node scripts/cleanupTestData.js"
+    "cleanup:test-data": "node scripts/cleanupTestData.js",
+    "ai:check": "node scripts/checkAiConfig.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@google/genai": "^2.31.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^18.0.8",
