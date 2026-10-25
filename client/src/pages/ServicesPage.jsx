@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { listServices } from '../api/servicesApi.js'
+import ServiceAdvisor from '../components/ServiceAdvisor.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
 import StatusMessage from '../components/StatusMessage.jsx'
 import { useAsyncData } from '../hooks/useAsyncData.js'
@@ -71,6 +72,8 @@ function ServicesPage() {
         <h1>Our services</h1>
         <p>Choose a service to see the details and book your appointment.</p>
       </div>
+
+      <ServiceAdvisor />
 
       <div className="toolbar">
         <div className="chips" role="group" aria-label="Filter by category">
