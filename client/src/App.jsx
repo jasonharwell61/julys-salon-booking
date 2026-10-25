@@ -1,54 +1,26 @@
-import { useEffect, useState } from 'react'
-import { api } from './api/apiClient.js'
-import { listServices } from './api/servicesApi.js'
+import { Route, Routes } from 'react-router-dom'
+import Footer from './components/Footer.jsx'
+import Navigation from './components/Navigation.jsx'
+import Home from './pages/Home.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
+import ServiceDetailPage from './pages/ServiceDetailPage.jsx'
+import ServicesPage from './pages/ServicesPage.jsx'
 
 function App() {
-  const [health, setHealth] = useState('loading...')
-  const [services, setServices] = useState(null)
-  const [error, setError] = useState('')
-  const [probe, setProbe] = useState('')
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function load() {
-      try {
-        const h = await api.get('/health', { auth: false, signal: controller.signal })
-        const s = await listServices({ signal: controller.signal })
-        setHealth(JSON.stringify(h))
-        setServices(s)
-      } catch (err) {
-        if (err.name === 'AbortError') return
-        setError(`${err.name}: ${err.message}${err.status ? ` (HTTP ${err.status})` : ''}`)
-      }
-    }
-
-    load()
-    return () => controller.abort()
-  }, [])
-
-  async function runProbe(path) {
-    try {
-      await api.get(path)
-      setProbe(`${path} succeeded`)
-    } catch (err) {
-      setProbe(`${path} -> ${err.name}: ${err.message} (HTTP ${err.status})`)
-    }
-  }
-
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: 24 }}>
-      <h1>API layer smoke test</h1>
-      <p><strong>Health:</strong> {health}</p>
-      {error && <p style={{ color: 'crimson' }}><strong>Error:</strong> {error}</p>}
-      <p><strong>Services loaded:</strong> {services ? services.length : '...'}</p>
-      <ul>
-        {services && services.map((s) => <li key={s.id}>{s.name}</li>)}
-      </ul>
-      <button onClick={() => runProbe('/does-not-exist')}>Test a 404</button>{' '}
-      <button onClick={() => runProbe('/auth/me')}>Test a 401</button>
-      <p>{probe}</p>
-    </main>
+    <div className="app-shell">
+      <a className="skip-link" href="#main">Skip to content</a>
+      <Navigation />
+      <main id="main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:id" element={<ServiceDetailPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   )
 }
 
