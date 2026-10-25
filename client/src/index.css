@@ -185,3 +185,49 @@ a:hover { color: var(--gold); }
 
 /* ---------- Footer ---------- */
 .site-footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.12em; }
+
+/* ---------- Auth ---------- */
+.nav-cta {
+  border: 1px solid var(--gold) !important;
+  border-radius: 999px; padding: 0.4rem 1.1rem !important; color: var(--gold-light) !important;
+}
+.nav-cta:hover,
+.nav-cta.active { background: var(--gold); color: #111 !important; }
+.nav-button {
+  background: none; border: 0; padding: 0.4rem 0; cursor: pointer;
+  color: var(--muted); font-family: inherit; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.nav-button:hover { color: var(--gold-light); }
+@media (max-width: 640px) {
+  .nav-button { display: block; width: 100%; padding-block: 0.9rem; text-align: left; }
+  .nav-cta { display: inline-block !important; margin-block: 0.6rem; }
+}
+
+.auth-card {
+  max-width: 28rem; margin-inline: auto; padding: 2.25rem 2rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+}
+.auth-card h1 { font-size: clamp(2rem, 5vw, 2.6rem); margin-bottom: 0.5rem; }
+.auth-intro { margin-bottom: 1.75rem; color: var(--muted); }
+.field { margin-bottom: 1.1rem; }
+.field-label { display: block; margin-bottom: 0.35rem; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.field-input {
+  width: 100%; min-height: 46px; padding: 0.55rem 0.9rem; border-radius: 10px;
+  background: var(--black); border: 1px solid var(--border); color: var(--text); font-size: 1rem;
+}
+.field-input:focus { border-color: var(--gold); outline: none; }
+.field-input[aria-invalid='true'] { border-color: var(--danger); }
+.field-error { margin: 0.35rem 0 0; color: var(--danger); font-size: 0.85rem; }
+.field-hint { margin: -0.6rem 0 1.1rem; color: var(--muted); font-size: 0.8rem; }
+.form-banner {
+  margin-bottom: 1.25rem; padding: 0.75rem 1rem; border-radius: 10px;
+  border: 1px solid var(--danger); background: rgba(255, 138, 128, 0.08); color: var(--danger); font-size: 0.9rem;
+}
+.auth-submit { width: 100%; margin-top: 0.5rem; }
+.auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-switch { margin: 1.5rem 0 0; text-align: center; color: var(--muted); font-size: 0.9rem; }
+.account-details { margin: 1.5rem 0; }
+.account-details div { padding: 0.9rem 0; border-bottom: 1px solid var(--border); }
+.account-details dt { color: var(--muted); font-size: 0.72rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; }
+.account-details dd { margin: 0.15rem 0 0; font-size: 1.1rem; word-break: break-word; }
+.account-role { text-transform: capitalize; color: var(--gold-light); }
