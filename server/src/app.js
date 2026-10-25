@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js'
 import serviceRoutes from './routes/serviceRoutes.js'
 import bookingRoutes from './routes/bookingRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import aiRoutes from './routes/aiRoutes.js'
 import notFound from './middleware/notFound.js'
 import errorHandler from './middleware/errorHandler.js'
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/services', serviceRoutes)
 app.use('/api/bookings', bookingRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/ai', aiRoutes)
 
 // These two MUST stay last: unknown routes first, then errors
 app.use(notFound)
