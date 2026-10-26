@@ -23,7 +23,6 @@ const UNSUPPORTED = /\$\s?\d|\bfree\b|guarantee|hypoallergenic|\bsafe(ly|st)?\b|
 
 // ---- Test cases ------------------------------------------------------------------------------------------
 // expect(result) returns true when the outcome is acceptable. "Expected" is the human-readable version.
-const names = (r) => r.recommendations.map((x) => x.service.name)
 const some = (r, test) => r.recommendations.some((x) => test(x.service))
 const none = (r) => r.recommendations.length === 0
 

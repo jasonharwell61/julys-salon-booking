@@ -82,6 +82,18 @@ export function validateAppointmentTime(startTime, endTime, now = new Date()) {
   }
 }
 
+// "Check that the time is free, then save" is two steps. If two requests run at the same moment,
+// both can pass the check before either saves, and the same time gets booked twice.
+// This lets only ONE of those check-and-save steps run at a time (the others wait their turn).
+// It protects a single server process, which is how this app runs. If it is ever scaled to several
+// servers, replace it with a database-level guarantee (for example a transaction or a slot document).
+let slotQueue = Promise.resolve()
+function withSlotLock(task) {
+  const run = slotQueue.then(task)
+  slotQueue = run.then(() => {}, () => {}) // a failed task must not block the ones behind it
+  return run
+}
+
 // Throws a 409 if another active booking overlaps this time window.
 // excludeBookingId lets a booking be rescheduled without conflicting with itself.
 export async function assertSlotIsFree(startTime, endTime, excludeBookingId) {
@@ -111,19 +123,23 @@ export async function createBooking({ userId, serviceId, startTime, customerNote
   const endTime = new Date(startTime.getTime() + service.durationMinutes * MINUTE_MS)
 
   validateAppointmentTime(startTime, endTime)
-  await assertSlotIsFree(startTime, endTime)
 
-  return Booking.create({
-    user: userId,
-    service: service._id,
-    serviceSnapshot: {
-      name: service.name,
-      durationMinutes: service.durationMinutes,
-      priceCents: service.priceCents,
-    },
-    startTime,
-    endTime,
-    customerNote,
+  // Check and save happen together, so two requests cannot both take the same time
+  return withSlotLock(async () => {
+    await assertSlotIsFree(startTime, endTime)
+
+    return Booking.create({
+      user: userId,
+      service: service._id,
+      serviceSnapshot: {
+        name: service.name,
+        durationMinutes: service.durationMinutes,
+        priceCents: service.priceCents,
+      },
+      startTime,
+      endTime,
+      customerNote,
+    })
   })
 }
 
@@ -192,25 +208,31 @@ export async function updateBooking(user, bookingId, changes) {
     throw new ApiError(409, 'Past appointments cannot be changed')
   }
 
+  let endTime
   if (changes.startTime !== undefined) {
     // Duration comes from the saved snapshot, not from the request
-    const endTime = new Date(
+    endTime = new Date(
       changes.startTime.getTime() + booking.serviceSnapshot.durationMinutes * MINUTE_MS
     )
     validateAppointmentTime(changes.startTime, endTime)
-    await assertSlotIsFree(changes.startTime, endTime, booking._id) // ignore itself
-
-    booking.startTime = changes.startTime
-    booking.endTime = endTime
   }
 
-  if (changes.customerNote !== undefined) {
-    // An empty note clears it
-    booking.customerNote = changes.customerNote || undefined
-  }
+  // Check and save happen together, so a reschedule cannot collide with a simultaneous booking
+  return withSlotLock(async () => {
+    if (changes.startTime !== undefined) {
+      await assertSlotIsFree(changes.startTime, endTime, booking._id) // ignore itself
+      booking.startTime = changes.startTime
+      booking.endTime = endTime
+    }
 
-  await booking.save()
-  return booking
+    if (changes.customerNote !== undefined) {
+      // An empty note clears it
+      booking.customerNote = changes.customerNote || undefined
+    }
+
+    await booking.save()
+    return booking
+  })
 }
 
 // Cancels a booking (the record is kept, with status "cancelled")

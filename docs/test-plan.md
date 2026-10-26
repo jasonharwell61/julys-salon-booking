@@ -6,7 +6,7 @@ Project: July's Salon booking platform. Version of the app under test: the `main
 
 - Run each test, fill in **Actual**, and set **Status** to Pass or Fail. Statuses start as `Not run`.
 - Preconditions use these accounts: one customer (A), a second customer (B), and one admin. Use clearly fake test emails; delete them before the demo (see the cleanup step).
-- **Automated** shows the script that already covers all or part of the test. Run these first: `npm run test:booking-rules`, `test:ownership`, `test:ai-service`, `test:ai-route`, `eval:ai` (all in `server/`), and `npm run lint` and `npm run build` in `client/`.
+- **Automated** shows the script that already covers all or part of the test. Run these first: `npm run test:booking-rules`, `test:ownership`, `test:ai-service`, `test:ai-route`, `eval:ai` (all in `server/`; `npm test` runs the five automated test scripts together), and `npm run lint` and `npm run build` in `client/`.
 - Record failures honestly. A failed test with a fix is better evidence than a hidden one.
 
 ## Test cases
@@ -156,15 +156,16 @@ Total manual and mixed test cases: 74.
 
 Already in place and worth keeping:
 
-- `test:booking-rules`: opening days and hours, the 15-minute grid, notice and advance limits, daylight-saving behavior. This is the core business rule set.
+- `test:booking-rules`: opening days and hours, the 15-minute grid, notice and advance limits, daylight-saving behavior, using a fixed "now" so results never depend on today's date. This is the core business rule set.
+- `test:booking-race`: simultaneous bookings and reschedules cannot take the same time.
 - `test:ownership`: the 403 rule that stops one customer from touching another's booking.
 - `test:ai-service` and `test:ai-route`: validation, ID whitelist, claim scrubbing, fallback, injection handling, authentication and per-user rate limit, with a fake provider and no database.
 - `eval:ai`: real-model quality and safety cases, rerun after any prompt or filter change.
 
 Recommended additions (small and focused):
 
-1. **Make the booking-rule tests independent of today's date.** Some cases use fixed dates in November 2026 and will start failing after those dates pass. Compute the dates from the current time instead. This is a real fragility, not a style change.
-2. **A double-booking race test** against the real database: send two simultaneous requests for the same slot and expect exactly one 201 and one 409. Overlap is the highest-risk business rule, and a check-then-insert design can fail under concurrency. Only add the fix if this test shows a real problem.
+1. **A double-booking race test** (added in Step 36 as `test:booking-race`): send simultaneous requests for the same or overlapping times and expect exactly one success and the rest 409. Overlap is the highest-risk business rule, and the first version of this test failed (5 of 8 checks), which exposed a real check-then-save race. It is fixed with a one-at-a-time lock around the check and save.
+2. **A real-database version of the same race** can be added later if the app is ever run on more than one server, because the lock protects a single server process only.
 3. **A route-level authorization test** (no database needed, like `test:ai-route`): every `/api/admin/*` route returns 401 without a token and 403 for a customer. This guards against a future route being added unprotected.
 
 Deliberately not recommended: tests that only restate the code (for example checking a component renders its own text) or snapshot tests of styling. They add maintenance cost without catching business-rule mistakes.
