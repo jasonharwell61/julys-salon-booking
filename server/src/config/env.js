@@ -34,4 +34,7 @@ export const env = {
   aiTimeoutMs: readPositiveInt('AI_TIMEOUT_MS', 15000),
   // AI requests allowed per user per 15 minutes
   aiRateLimitMax: readPositiveInt('AI_RATE_LIMIT_MAX', 20),
+  // How many proxy servers sit in front of this app (0 = none, as on your own computer).
+  // Hosting platforms usually need 1. Without it, every visitor looks like the same address to the rate limiter.
+  trustProxy: Number.isInteger(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : 0,
 }

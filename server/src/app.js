@@ -13,6 +13,11 @@ import errorHandler from './middleware/errorHandler.js'
 
 const app = express()
 
+// Behind a hosting proxy, read the visitor's real address so rate limits work per person (see TRUST_PROXY)
+if (env.trustProxy > 0) {
+  app.set('trust proxy', env.trustProxy)
+}
+
 // Adds security headers to every response
 app.use(helmet())
 
