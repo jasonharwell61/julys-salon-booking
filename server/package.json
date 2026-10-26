@@ -17,7 +17,8 @@
     "cleanup:test-data": "node scripts/cleanupTestData.js",
     "ai:check": "node scripts/checkAiConfig.js",
     "test:ai-service": "node scripts/testAiService.js",
-    "test:ai-route": "node scripts/testAiRoute.js"
+    "test:ai-route": "node scripts/testAiRoute.js",
+    "eval:ai": "node scripts/evalAiRecommender.js"
   },
   "keywords": [],
   "author": "",

@@ -9,7 +9,7 @@ export const NO_MATCH_SUMMARY = "We couldn't find a close match for that. Browse
 
 // Claims we never want shown: prices, guarantees, medical or safety promises, booking confirmations
 const UNSUPPORTED_CLAIM =
-  /\$\s?\d|\b\d+\s?(usd|dollars?)\b|guarantee|hypoallergenic|\b(safe|safest)\s+for\b|medical|\bcure[sd]?\b|diagnos|treat(s|ed|ment)?\s+(for|of)\b|\bbooked\b|\bconfirmed\b|\bdiscount|\bavailable\b/i
+  /\$\s?\d|\b\d+\s?(usd|dollars?)\b|guarantee|hypoallergenic|\bsafe(ly|st)?\b|medical|\bcure[sd]?\b|diagnos|treat(s|ed|ment)?\s+(for|of)\b|\bbooked\b|\bconfirmed\b|\bdiscount|\bavailable\b/i
 
 function cut(text, max) {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text

@@ -95,6 +95,10 @@ console.info('\nUntrusted model output')
   r = (await run('natural look please', fake(JSON.stringify({ summary: 'Good', recommendations: [{ serviceId: ids[0], reason: 'Completely safe for sensitive eyes' }] })))).result
   check('safety claim replaced', r.recommendations[0].reason === services[0].description)
 
+  r = (await run('remove my lashes', fake(JSON.stringify({ summary: 'We can remove your extensions safely and gently.', recommendations: [{ serviceId: ids[3], reason: 'Done safely by a professional.' }] })))).result
+  check('"safely" in reason replaced', r.recommendations[0].reason === services[3].description)
+  check('"safely" in summary replaced by a neutral sentence', !/safe/i.test(r.summary))
+
   r = (await run('natural look please', fake(JSON.stringify({ summary: 'Good', recommendations: [{ serviceId: ids[0], reason: 'x'.repeat(500) }] })))).result
   check('long reason shortened to 200', r.recommendations[0].reason.length <= 200)
 
