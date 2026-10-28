@@ -16,6 +16,7 @@ Method: code reading of every route, controller, validator, middleware and model
 | 7 | Low | `/api/health` is public and reveals database up/down state. | `healthController.js` | Accepted (needed for hosting health checks; no secrets) |
 | 8 | Info | Default `CLIENT_ORIGIN` is `http://localhost:5173`. If forgotten in production, the real site is blocked by CORS (fails closed, not open). | `server/src/config/env.js` | Set in Step 41 |
 | 9 | Info | Test and QA accounts and bookings exist in the database. | MongoDB | Clean up before the demo |
+| 10 | Medium | **Found in Step 43:** a real-looking 64-character `JWT_SECRET` was committed in `server/.env.example` (commit `e9ec178`, 2026-10-21) and pushed. It was replaced with a placeholder on 2026-10-25 (commit `9038f10`), but it remains in Git history. | `server/.env.example` history | **Fix:** replace the development `JWT_SECRET` in `server/.env`. Production uses a different, newly generated secret. History is not rewritten. |
 
 ## Fix details
 
@@ -27,7 +28,7 @@ Method: code reading of every route, controller, validator, middleware and model
 
 ## Checked and found sound
 
-- **Secrets:** `.env` was never committed (searched all Git history). `.gitignore` covers `.env` and `.env.*`, and allows `.env.example`. No API keys, tokens or private keys in tracked files. The only connection-string text is the placeholder in `server/.env.example`.
+- **Secrets:** `.env` was never committed (searched all Git history for `.env` files). `.gitignore` covers `.env` and `.env.*`, and allows `.env.example`. No API keys, database credentials or private keys in the current tracked files; the only connection-string text is the placeholder in `server/.env.example`. **Correction (Step 43):** the first version of this review checked the current files for key and connection-string patterns, which would not catch a random 64-character secret, and a development `JWT_SECRET` had been committed in an early version of `.env.example` (finding 10). A full-history search for Google API keys and connection-string passwords found none.
 - **AI key exposure:** `AI_API_KEY` exists only in `server/.env`; the client contains no reference to it; the checking script prints only whether it is set; errors from the provider are replaced by short codes.
 - **Passwords:** bcrypt cost 10; hashes are excluded from queries and JSON output; 8 to 72 character rule with letter and digit; bcrypt's 72-byte limit enforced; unknown-email logins take similar time (dummy hash); same error for wrong email and wrong password.
 - **Tokens:** HS256 pinned on sign and verify; the secret must be at least 32 characters or the server refuses to start; only the user ID is in the token.

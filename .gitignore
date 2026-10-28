@@ -1,0 +1,9 @@
+# Safety net for the whole repository (client and server also have their own .gitignore files)
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
