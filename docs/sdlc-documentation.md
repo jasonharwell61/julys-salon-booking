@@ -5,7 +5,7 @@ author: "GitHub: jasonharwell61 — UT Arlington AI-Centric Software Engineering
 date: "October 2026"
 ---
 
-> **How to read this document.** Anything marked **[ADD]** is evidence only the author can supply (screenshots, personal reflections, manual test results). Nothing in this document claims testing that was not run. Where a result was not yet recorded, it says so.
+> **How to read this document.** Nothing in this document claims testing that was not run. Where a result was not recorded, it says so. Screenshots are photographs of the author's screen taken with a phone; sensitive values were kept out of frame.
 
 # 1. Project overview
 
@@ -105,7 +105,7 @@ Timezone America/Chicago. Open Monday–Saturday 9:00–18:00. 15-minute time gr
 
 # 7. Wireframes
 
-Low-fidelity layouts of the implemented screens. **[ADD]** Replace or supplement these with your own hand sketches or screenshots if your instructor wants originals. Screenshots from a local test run (sample data) are in `docs/screenshots/`.
+Low-fidelity layouts of the implemented screens. Screenshots from a local test run (sample data) are in `docs/screenshots/`.
 
 **Services page with AI assistant**
 
@@ -275,7 +275,7 @@ Design choices: nouns for resources, HTTP verbs for actions, status codes that m
 
 **Safety controls.** Grounding in database data; ID whitelist; claim filter; input limits; per-user rate limit (default 20 per 15 minutes); API key on the server only; logs contain no customer text; the AI cannot create, change or cancel bookings.
 
-**Evaluation.** A fixed set of 19 test cases (normal requests, vague requests, off-topic requests, prompt-injection attempts, requests with personal data, unsupported claims) is run by `npm run eval:ai`, which writes `docs/ai-evaluation-results.md`. The first run flagged one case for human review (a reason containing the word "safely"). After tightening the claim filter, the second run recorded 19 pass, 0 review, 0 fail on the automated checks. **[ADD]** The usefulness ratings (1–5) and reviewer notes in that file have not been filled in yet; add them before submitting and do not describe them as completed until you do.
+**Evaluation.** A fixed set of 19 test cases (normal requests, vague requests, off-topic requests, prompt-injection attempts, requests with personal data, unsupported claims) is run by `npm run eval:ai`, which writes `docs/ai-evaluation-results.md`. The first run flagged one case for human review (a reason containing the word "safely"). After tightening the claim filter, the second run recorded 19 pass, 0 review, 0 fail on the automated checks. The file also has columns for human usefulness ratings (1–5) and reviewer notes; see that file for what has been completed. The automated checks do not replace human judgement of usefulness.
 
 # 13. Testing evidence
 
@@ -294,7 +294,35 @@ All automated tests run from `server/` with `npm test` and use fakes, so they ne
 
 **Manual and live testing.** A full manual test plan with 74 cases mapped to requirements is in `docs/test-plan.md`. Its Status and Actual columns were generated as "Not run". The author performed a live smoke test of the production site covering register, login, services, AI recommendation, booking, change and cancel, logout, page refreshes and data persistence, and reported that it worked. Postman checks of the AI endpoint returned the expected 200 (valid request), 400 (invalid body) and 401 (no token).
 
-**[ADD]** Fill in the Actual and Status columns of `docs/test-plan.md` for the tests you actually run, and insert screenshots here: (1) terminal showing `npm test` all passing, (2) Postman 200/400/401 results, (3) live-site booking, (4) admin view, (5) AI suggestions.
+Results for the manual tests that were run are recorded in the Actual and Status columns of `docs/test-plan.md`. Tests not recorded there were not run.
+
+**Figure 1.** Terminal output of `npm test` for the booking race test: concurrent requests for the same time produce exactly one booking, the other gets 409.
+
+![Booking race test output](screenshots/evidence-test-race.jpg){width=6in}
+
+**Figure 2.** Postman: `POST /api/ai/recommend-service` with a valid body returns 200 OK (local server).
+
+![Postman 200 OK](screenshots/evidence-postman-200-local.jpg){width=6in}
+
+**Figure 3.** Postman: the same endpoint without a token returns 401 `Authentication required`.
+
+![Postman 401](screenshots/evidence-postman-401.jpg){width=6in}
+
+**Figure 4.** Postman against the live API: a message that is too short returns 400 `Validation failed`.
+
+![Postman 400 on the live API](screenshots/evidence-postman-400-live.jpg){width=6in}
+
+**Figure 5.** Live site: the AI assistant on the Services page. In this capture the assistant showed its fallback message ("Our smart assistant is busy, so these suggestions are simple keyword matches"), which demonstrates the fallback path working.
+
+![AI assistant on the live site](screenshots/evidence-live-ai.jpg){width=6in}
+
+**Figure 6.** Live site: a confirmed booking in My Bookings.
+
+![Live booking](screenshots/evidence-live-booking.jpg){width=6in}
+
+**Figure 7.** Live site: the admin all-bookings view with status filters and "Mark completed" buttons.
+
+![Admin bookings on the live site](screenshots/evidence-admin-live.jpg){width=6in}
 
 A failed test with a documented fix is acceptable evidence; do not mark a test as passed unless you ran it.
 
@@ -312,7 +340,21 @@ Environment variable names: server — `PORT`, `NODE_ENV`, `MONGODB_URI`, `JWT_S
 
 Free-tier note: the API sleeps after 15 minutes idle; the first request can take about a minute.
 
-**[ADD]** Screenshots of the Render service, Vercel deployment and Atlas collections (hide secrets).
+**Figure 8.** Render deploy log: the API started and connected to the production database (`julys_salon_prod`).
+
+![Render logs](screenshots/evidence-render-logs.jpg){width=6in}
+
+**Figure 9.** Vercel deployments for the frontend project (latest commit "Add SDLC documentation").
+
+![Vercel deployments](screenshots/evidence-vercel-deployments.jpg){width=6in}
+
+**Figure 10.** MongoDB Atlas cluster overview.
+
+![Atlas overview](screenshots/evidence-atlas-overview.jpg){width=6in}
+
+**Figure 11.** MongoDB Atlas Data Explorer showing the `julys_salon_prod` database.
+
+![Atlas data explorer](screenshots/evidence-atlas-collections.jpg){width=6in}
 
 # 15. Git development evidence
 
@@ -334,7 +376,7 @@ The repository has 30 commits between October 19 and October 27, 2026, each repr
 
 Commit 9038f10 (Oct 25, "Replace JWT secret with placeholder in env example") and the later security review document an honest correction: an early `.env.example` commit (e9ec178) contained a real-looking JWT secret. The secret was rotated everywhere it was used; the git history was not rewritten, so the old value remains visible in history but is no longer valid.
 
-**[ADD]** A screenshot of `git log --oneline` and of the GitHub commit history page.
+The full commit history is visible at https://github.com/jasonharwell61/julys-salon-booking/commits/main and in the Vercel deployment list in Figure 9, which shows the most recent commits.
 
 # 16. How AI assisted development
 
@@ -355,12 +397,12 @@ What AI did not do: it did not receive secrets (the author was told not to paste
 
 # 18. Lessons learned and future improvements
 
-**Lessons learned.** **[ADD]** Write 3–5 sentences in your own words. Points that are supported by this project's history:
+**Lessons learned.**
 
-- Never let the AI be the source of truth: prices, IDs and durations come from the database, and AI text is validated.
-- Small tests with exact counts catch problems "it ran without errors" would miss.
-- Secrets can leak through history, not just current files; rotate first, then clean up.
-- Free-tier hosting has real constraints (sleep, no fixed IP) that must be documented honestly.
-- Building one verified step at a time made debugging much easier.
+1. I learned to treat AI output as a suggestion to verify, not an answer to trust. My recommender only returns services that exist in the database, and the server checks the AI's response before the customer sees it. My own evaluation caught a reason containing "safely", and I tightened the filter.
+2. I learned to test what happens when things go wrong, not just when they go right. Writing a race-condition test showed me that two requests at the same moment could both pass the overlap check, so I added a lock and a test to prove it. I also learned to say plainly that the lock only protects a single server.
+3. I learned that secrets can hide in old git history, not just in current files. I found a real-looking JWT secret in an early `.env.example` commit, rotated it, and documented it in my security review instead of ignoring it.
+4. I learned to check exact results rather than "no errors". When my test count showed 46 passing instead of 48, it revealed that some files had not been saved, which a plain "it ran" would have missed.
+5. I learned that building and verifying one step at a time made problems much easier to find, and that free hosting has real tradeoffs I should document honestly, like the server sleeping when idle and the wide-open Atlas network setting.
 
 **Future improvements.** Email/SMS confirmations and reminders; payments or deposits; multiple staff and locations; database-level double-booking guard (unique slot index or transactions) before running multiple server instances; HttpOnly-cookie sessions with refresh tokens and server-side revocation; admin-editable hours and holidays; the Service Comparison Helper (grounded AI comparison of two services); end-to-end browser tests in continuous integration; a paid AI tier or alternative provider for stricter data handling.
